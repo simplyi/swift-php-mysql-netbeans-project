@@ -182,6 +182,40 @@ class MySQLDAO
         return $returnValue;  
     }
     
+ 
+    public function searchFriends($searchWord)
+    {
+        $returnValue = array();
+        
+        $sql = "select * from friends where 1";
+       
+        if(!empty($searchWord))
+        {
+            $sql .= " and ( first_name like ? or last_name like ? )";
+        }
+  
+        $statement = $this->conn->prepare($sql);
+
+        if (!$statement)
+            throw new Exception($statement->error);
+
+        if(!empty($searchWord))
+        {
+          $searchWord = '%' . $searchWord . "%";
+          $statement->bind_param("ss",  $searchWord , $searchWord);
+        }
+        
+        $statement->execute();
+       
+        $result = $statement->get_result();
+        
+         while ($myrow = $result->fetch_assoc()) 
+         {
+           $returnValue[] = $myrow;
+         }
+         
+        return $returnValue;
+    }  
     
 }
 
