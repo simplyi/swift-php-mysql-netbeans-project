@@ -215,7 +215,23 @@ class MySQLDAO
          }
          
         return $returnValue;
-    }  
+    } 
+    
+    function deleteFriendRecord($friend_token) 
+    {
+        $sql = "delete from friends where token=?";
+        $statement = $this->conn->prepare($sql);
+
+        if (!$statement)
+            throw new Exception($statement->error);
+
+        $statement->bind_param("s", $friend_token);
+        $statement->execute();
+        
+        $returnValue = $statement->affected_rows;
+        
+        return $returnValue;  
+    }
     
 }
 
